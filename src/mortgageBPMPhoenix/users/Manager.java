@@ -6,18 +6,22 @@ import java.util.Set;
 
 import mortgageBPMPhoenix.requests.MtgRequest;
 import mortgageBPMPhoenix.requests.ReqStatus;
+import mortgageBPMPhoenix.utilities.util;
 
 public class Manager extends User {
 
 	private String branch;
 	private Set<Agent> agents;
 	private Set<MtgRequest> requests;
+	private String password;
 
-	public Manager(int id, String fullName, Date dob, String branch, Set<Agent> agents, Set<MtgRequest> requests) {
+	public Manager(int id, String fullName, Date dob, String branch, Set<Agent> agents, Set<MtgRequest> requests,
+			String password) {
 		super(id, fullName, dob);
 		this.branch = branch;
 		this.agents = agents;
 		this.requests = requests;
+		this.password = password;
 	}
 
 	public String getBranch() {
@@ -32,55 +36,64 @@ public class Manager extends User {
 		return agents;
 	}
 
-	public void setAgents(Set<Agent> agents) {
+	private void setAgents(Set<Agent> agents) {
 		this.agents = agents;
+	}
+
+	public void removeAllAgents() {
+		setAgents(new HashSet<Agent>());
 	}
 
 	public Set<MtgRequest> getRequests() {
 		return requests;
 	}
 
-	public void setRequests(Set<MtgRequest> requests) {
+	private void setRequests(Set<MtgRequest> requests) {
 		this.requests = requests;
 	}
-	
+
+	public void removeAllRequests() {
+		setRequests(new HashSet<MtgRequest>());
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	public void addAgent(Agent agent) {
-		try {
-			this.agents.add(agent);
-		} catch (Exception e) {
-			notifier(e.getMessage());
-		}
-	}
-	
-	public void addRequest(MtgRequest request) {
-		try {			
-			this.requests.add(request);
-		} catch (Exception e) {
-			notifier(e.getMessage());
-		}
-	}
-	
-	public void removeRequest(MtgRequest request) {
-		try {			
-			this.requests.remove(request);
-		} catch (Exception e) {
-			notifier(e.getMessage());
-		}
+		if (!this.agents.add(agent))
+			this.notifier("you have Agent " + agent.getFullName() + " already");
+		else
+			this.notifier("Agent " + agent.getFullName() + " added !");
 	}
 
 	public void removeAgent(Agent agent) {
-		try {
-			this.agents.remove(agent);
-			agent.setManager(null);
-		} catch (Exception e) {
-			notifier(e.getMessage());
-		}
-	}
-	
-	public void setAgentCommission(Agent agent, double commission) {
-		agent.setComissionRate(commission);
+		if(!this.agents.remove(agent))
+			this.notifier("Agent "+agent.getFullName()+ " not found");
+			else 
+				this.notifier("Agent "+agent.getFullName()+" removed");
 	}
 
+	public void addRequest(MtgRequest request) {
+		if(!this.requests.add(request))
+		this.notifier("you have request "+request.getId()+ " already");
+		else 
+			this.notifier("Request "+request.getId()+" added !");
+	}
+
+	public void removeRequest(MtgRequest request) {
+		if(!this.requests.add(request))
+		this.notifier("you have request "+request.getId()+ " already");
+		else 
+			this.notifier("Request "+request.getId()+" added !");
+	}
+
+
+	// Gets all requests from all agents
 	public Set<MtgRequest> getAgentRequests() {
 		Set<MtgRequest> allrequests = new HashSet<MtgRequest>();
 		for (Agent agent : agents) {
@@ -89,35 +102,37 @@ public class Manager extends User {
 		return allrequests;
 	}
 
+	// Checks if the request is indeed ready,then Processes the request (A more serious process can be added instead of "processing")
+	//,then asks for a manager decision: updates request status and sends messages accordingly.
 	public boolean reviewForApproval(MtgRequest request) {
 		if (request.getStatus() != ReqStatus.ManagerAssessment) {
-			notifier("this request is not ready !");
+			notifier("Request " + request.getId() + " is not ready !");
 			return false;
 		}
-		notifier("processing...");
-		notifier("what to do? approve/improve/decline");
-		String answer = scan.next();
+		notifier("processing "+request.getId()+" ...");
+		notifier(request.getId()+", what to do? approve/improve/decline");
+		String answer = util.scan.next();
 		switch (answer) {
 
 		case "approve":
-			notifier("Mortgage " + request.getId() + " has been approved !");
 			request.setStatus(ReqStatus.Approved);
-			request.getRequestor().notifier(
-					"Congratualations ! your request has been approved ! contact agent for further instructions !");
+			notifier("Mortgage " + request.getId() + " has been approved !");
+			request.getAgent().notifier("Request "+ request.getId()+" has been approved ! sending message to requestor as well");
+			request.getRequestor().notifier("Congratualations ! your request has been approved ! contact agent for further instructions !");
 			return true;
 		case "improve":
-			notifier("MtgRequest " + request.getId() + " not approved ! what r your comments?");
-			scan.nextLine();
-			String comments = scan.nextLine();
 			request.setStatus(ReqStatus.AgentAssessment);
+			notifier("MtgRequest " + request.getId() + " not approved ! what r your comments?");
+			util.scan.nextLine();
+			String comments = util.scan.nextLine();
 			request.getAgent()
 					.notifier("Request Not approved by " + this.fullName + ". Here are his comments: " + comments);
 			return false;
 		case "decline":
+			request.setStatus(ReqStatus.Declined);
 			notifier("MtgRequest " + request.getId() + " Declined !");
 			request.getAgent().notifier("MtgRequest" + request.getId() + " Declined !");
 			request.getRequestor().notifier("We're Sorry :( Your mortgage was declined");
-			request.setStatus(ReqStatus.Declined);
 			return false;
 		}
 		return false;

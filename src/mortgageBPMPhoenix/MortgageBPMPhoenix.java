@@ -23,9 +23,9 @@ public class MortgageBPMPhoenix {
 		Set<Property> properties = new HashSet<Property>();
 		Set<MtgRequest> requests = new HashSet<MtgRequest>();
 		Set<Requestor> requestors = new HashSet<Requestor>();
-		Set<Agent> agents =null;
+		Set<Agent> agents = new HashSet<Agent>();
 		Property p1 = new Property(0, 160, 4000000);
-		Manager manny =new Manager(2, "Ponti", new GregorianCalendar(1954,1,1).getTime(), "Habima", agents, requests);
+		Manager manny =new Manager(2, "Ponti", new GregorianCalendar(1954,1,1).getTime(), "Habima", agents, requests,"1234");
 		Requestor r1 = new Requestor(0,"Artiom Dolgopiat",new GregorianCalendar(1964,8,16).getTime(),83.5,9000,properties);
 		Agent a1 = new Agent(1,"Tenzer",new GregorianCalendar(1976,3,24).getTime(),6,requests, manny,2.5);
 		MtgRequest req1 = new MtgRequest(0, a1, new Date(), r1, 150000000, p1);
@@ -35,8 +35,14 @@ public class MortgageBPMPhoenix {
 		System.out.println(manny.toString());
 		System.out.println(manny.getRequests());
 		manny.addAgent(a1);
+//		manny.removeAgent(a1);
+		a1.removeRequest(req1);
+//		a1.removeRequest(req2);
+		a1.addRequest(req1);
 		a1.addRequest(req1);
 		a1.addRequest(req2);
+//		a1.removeRequest(req1);
+//		a1.removeRequest(req2);
 		a1.assessRisk(req1);
 		a1.assessRisk(req2);
 		a1.processResult(req1);

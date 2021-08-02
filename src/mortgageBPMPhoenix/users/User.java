@@ -1,20 +1,18 @@
 package mortgageBPMPhoenix.users;
 
 import java.util.Date;
-import java.util.Scanner;
 
+// A template for user classes
 public abstract class User {
 	
 	protected int id;
 	protected String fullName;
 	protected Date dob;
-	protected Scanner scan; 
 
 	public User(int id, String fullName, Date dob) {
 		this.id = id;
 		this.fullName = fullName;
 		this.dob = dob;
-		this.scan = new Scanner(System.in);
 	}
 
 	public int getId() {
@@ -41,6 +39,7 @@ public abstract class User {
 		this.dob = dob;
 	}
 	
+	// Each user may have his own way of receiving messages from the system. can be overrided.
 	protected void notifier(String message) {
 		System.out.println(this.fullName+", "+message);
 	}

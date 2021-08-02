@@ -1,6 +1,6 @@
 package mortgageBPMPhoenix.properties;
 
-
+// A property will be created only when creating a new MtgRequest
 public class Property {
 	
 	private int id;
