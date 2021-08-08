@@ -6,15 +6,15 @@ import java.util.Set;
 import mortgageBPMPhoenix.properties.Property;
 import mortgageBPMPhoenix.utilities.util;
 
-public class Requestor extends User { 
+public class Requestor extends User {
 
 	private double creditScore;
 	private int salary;
 	// properties will be created only when creating a new MtgRequest
-	private Set<Property> assurances; 
+	private Set<Property> assurances;
 
 	// Requestor will be created only when creating a new mortgage request
-	public Requestor(int id, String fullName, Date dob, double creditScore, int salary, Set<Property> assurances) { 
+	public Requestor(int id, String fullName, Date dob, double creditScore, int salary, Set<Property> assurances) {
 		super(id, fullName, dob);
 		this.creditScore = creditScore;
 		this.salary = salary;
@@ -53,17 +53,17 @@ public class Requestor extends User {
 		}
 		return worth;
 	}
-	
+
 	@Override
-	//Requestor gets SMS because he's not part of the system interface
+	// Requestor gets SMS because he's not part of the system interface
 	protected void notifier(String message) {
-		util.sendSMS(this.fullName+", "+(message));
+		util.sendSMS(this.fullName + ", " + (message));
 	}
 
 	@Override
 	public String toString() {
-		return "Requestor [" + super.toString() + " creditScore=" + creditScore + ", salary=" + salary + ", assurances="
-				+ assurances + "]";
+		return "Requestor [id=" + id + ", fullName=" + fullName + ", dob=" + dob + ", creditScore=" + creditScore
+				+ ", salary=" + salary + ", assurances=" + assurances + "]";
 	}
 
 }

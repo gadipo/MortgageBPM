@@ -29,12 +29,14 @@ public class Agent extends User {
 	public int getSeniority() {
 		return seniority;
 	}
-	
+
 	// Sensitive Data protected by password
 	public void setSeniority(int seniority, String password) {
-		if (password.equalsIgnoreCase(this.manager.getPassword()))
+		if (password.equalsIgnoreCase(this.manager.getPassword())) {
 			this.seniority = seniority;
-		else
+			this.manager.notifier("Agent " + this.fullName + " Seniority set to :" + seniority);
+
+		} else
 			this.manager.notifier("password incorrect");
 	}
 
@@ -52,10 +54,15 @@ public class Agent extends User {
 
 	// Sensitive Data protected by password
 	public void setManager(Manager manager, String password) {
-		if (password.equalsIgnoreCase(this.manager.getPassword()))
+		if (password.equalsIgnoreCase(this.manager.getPassword())) {
 			this.manager = manager;
-		else
+			if (manager != null)
+				this.manager.notifier("Agent " + this.getFullName() + " added !");
+			else
+				this.manager.notifier("Agent " + this.getFullName() + " removed");
+		} else {
 			this.manager.notifier("password incorrect");
+		}
 	}
 
 	public double getComissionRate() {
@@ -64,29 +71,30 @@ public class Agent extends User {
 
 	// Sensitive Data protected by password
 	public void setComissionRate(double comissionRate, String password) {
-		if (password.equalsIgnoreCase(this.manager.getPassword()))
+		if (password.equalsIgnoreCase(this.manager.getPassword())) {
 			this.comissionRate = comissionRate;
-		else
+			this.manager.notifier("Agent " + this.fullName + " Commission Rate set to :" + comissionRate);
+		} else
 			this.manager.notifier("password incorrect");
 	}
 
 	// Adds request only if it is not present
 	public void addRequest(MtgRequest request) {
-			if(!this.requests.add(request))
-			this.notifier("you have request "+request.getId()+ " already");
-			else 
-				this.notifier("Request "+request.getId()+" added !");
+		if (!this.requests.add(request))
+			this.notifier("you have request " + request.getId() + " already");
+		else
+			this.notifier("Request " + request.getId() + " added !");
 	}
 
 	// Removes request only if present
 	public void removeRequest(MtgRequest request) {
-		if(!this.requests.remove(request))
-			this.notifier("Request "+request.getId()+" not found");
-			else 
-				this.notifier("Request "+request.getId()+" removed");
+		if (!this.requests.remove(request))
+			this.notifier("Request " + request.getId() + " not found");
+		else
+			this.notifier("Request " + request.getId() + " removed");
 	}
 
-	// Assesses  the risk according to requestor +request params and prints it
+	// Assesses the risk according to requestor +request params and prints it
 	public double assessRisk(MtgRequest request) {
 		if (!this.requests.contains(request)) {
 			this.notifier("You have to add a new request first !");
@@ -103,7 +111,8 @@ public class Agent extends User {
 		return risk;
 	}
 
-	// Assesses the risk and prints again for safety, and only if not too risky sends to manager after agent approval 
+	// Assesses the risk and prints again for safety, and only if not too risky
+	// sends to manager after agent approval
 	public boolean processResult(MtgRequest request) {
 		if (!this.requests.contains(request)) {
 			this.notifier("You have to add a new request first !");
@@ -132,7 +141,8 @@ public class Agent extends User {
 		}
 	}
 
-	// checks to see if agent is still connected to manager, then adds request to his requests set and notifies him
+	// checks to see if agent is still connected to manager, then adds request to
+	// his requests set and notifies him
 	// this method is expose internally only, to make sure processing has been done.
 	private void SendToManager(MtgRequest request) throws Exception {
 		if (this.manager == null) {
@@ -144,9 +154,10 @@ public class Agent extends User {
 	}
 
 	@Override
-	public String toString() { // not printing MtgRequests to avoid recursive printing
-		return "Agent [" + super.toString() + "seniority=" + seniority + ", manager=" + manager + ", comissionRate="
-				+ comissionRate + "]";
+	// not printing MtgRequests to avoid recursive printing
+	public String toString() {
+		return "Agent [id=" + id + ", fullName=" + fullName + ", dob=" + dob + ", seniority=" + seniority + ", manager="
+				+ manager + ", comissionRate=" + comissionRate + "]";
 	}
 
 }

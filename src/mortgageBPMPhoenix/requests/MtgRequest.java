@@ -17,7 +17,6 @@ public class MtgRequest {
 	private ReqStatus status;
 
 	public MtgRequest(int id, Agent agent, Date reqDate, Requestor requestor, int amountWanted, Property mtgProperty) {
-		super();
 		this.id = id;
 		this.agent = agent;
 		this.reqDate = reqDate;
