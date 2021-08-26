@@ -55,11 +55,12 @@ public class Agent extends User {
 	// Sensitive Data protected by password
 	public void setManager(Manager manager, String password) {
 		if (password.equalsIgnoreCase(this.manager.getPassword())) {
+			Manager tmpMng = this.manager;
 			this.manager = manager;
-			if (manager != null)
-				this.manager.notifier("Agent " + this.getFullName() + " added !");
+			if (manager == null)
+				tmpMng.notifier("Agent " + this.getFullName() + " removed");
 			else
-				this.manager.notifier("Agent " + this.getFullName() + " removed");
+				this.manager.notifier("Agent " + this.getFullName() + " added !");
 		} else {
 			this.manager.notifier("password incorrect");
 		}

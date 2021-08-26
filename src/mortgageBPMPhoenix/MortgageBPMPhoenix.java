@@ -37,7 +37,7 @@ public class MortgageBPMPhoenix {
 		System.out.println(manny.getRequests());
 		manny.addAgent(a1);
 		manny.setAgentRate(1.5,	a1);
-		manny.removeAgent(a1);
+//		manny.removeAgent(a1);
 		a1.removeRequest(req1);
 //		a1.removeRequest(req2);
 		a1.addRequest(req1);
